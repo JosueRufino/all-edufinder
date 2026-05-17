@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  student
+  parent
+  institution_admin
+  admin
+}
+
+model User {
+  id          String   @id @default(uuid())
+  name        String
+  email       String   @unique
+  password    String
+  phone       String?
+  province    String?
+  role        Role     @default(student)
+  createdAt   DateTime @default(now())
+
+  topics      ForumTopic[]
+  replies     ForumReply[]
+}
+
+model School {
+  id            String   @id @default(uuid())
+  name          String
+  tagline       String?
+  description   String
+  type          String
+  province      String
+  address       String
+  verified      Boolean  @default(false)
+  rating        Float    @default(0)
+  phone         String?
+  email         String?
+  website       String?
+  images        String[]
+  createdAt     DateTime @default(now())
+}
+
+model ForumTopic {
+  id          String   @id @default(uuid())
+  title       String
+  content     String
+  views       Int      @default(0)
+  likes       Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  userId      String
+  user        User @relation(fields: [userId], references: [id])
+
+  replies     ForumReply[]
+}
+
+model ForumReply {
+  id          String   @id @default(uuid())
+  content     String
+  createdAt   DateTime @default(now())
+
+  topicId     String
+  topic       ForumTopic @relation(fields: [topicId], references: [id])
+
+  userId      String
+  user        User @relation(fields: [userId], references: [id])
+}
+
+model Course {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  instructor  String
+  price       Float
+  createdAt   DateTime @default(now())
+}
