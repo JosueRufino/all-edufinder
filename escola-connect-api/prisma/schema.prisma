@@ -42,6 +42,18 @@ model School {
   email         String?
   website       String?
   images        String[]
+  courses       String[] @default([])
+  
+  latitude      Float?
+  longitude     Float?
+  reviews_count Int      @default(0)
+  students_count Int?
+  founded_year  Int?
+  pricing       Json?
+  facilities    Json?
+  schedule      Json?
+  stats         Json?
+
   createdAt     DateTime @default(now())
 }
 
@@ -49,8 +61,14 @@ model ForumTopic {
   id          String   @id @default(uuid())
   title       String
   content     String
+  excerpt     String   @default("")
+  category    String   @default("Geral")
+  tags        String[]
   views       Int      @default(0)
   likes       Int      @default(0)
+  isPinned    Boolean  @default(false)
+  isAnswered  Boolean  @default(false)
+  lastActivity DateTime @default(now())
   createdAt   DateTime @default(now())
 
   userId      String
@@ -62,6 +80,7 @@ model ForumTopic {
 model ForumReply {
   id          String   @id @default(uuid())
   content     String
+  likes       Int      @default(0)
   createdAt   DateTime @default(now())
 
   topicId     String

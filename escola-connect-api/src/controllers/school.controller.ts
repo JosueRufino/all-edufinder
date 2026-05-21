@@ -95,7 +95,17 @@ export class SchoolController {
         phone,
         email,
         website,
-        images
+        images,
+        latitude,
+        longitude,
+        reviews_count,
+        students_count,
+        founded_year,
+        pricing,
+        facilities,
+        schedule,
+        stats,
+        courses
       } = req.body;
 
       if (!name || !description || !type || !province || !address) {
@@ -118,7 +128,17 @@ export class SchoolController {
           phone: phone || null,
           email: email || null,
           website: website || null,
-          images: Array.isArray(images) ? images : []
+          images: Array.isArray(images) ? images : [],
+          courses: Array.isArray(courses) ? courses : [],
+          latitude: latitude !== undefined && latitude !== null ? Number(latitude) : null,
+          longitude: longitude !== undefined && longitude !== null ? Number(longitude) : null,
+          reviews_count: reviews_count !== undefined && reviews_count !== null ? Number(reviews_count) : 0,
+          students_count: students_count !== undefined && students_count !== null ? Number(students_count) : null,
+          founded_year: founded_year !== undefined && founded_year !== null ? Number(founded_year) : null,
+          pricing: pricing || null,
+          facilities: facilities || null,
+          schedule: schedule || null,
+          stats: stats || null
         }
       });
 
@@ -158,7 +178,13 @@ export class SchoolController {
           ...data,
           // Garante tipagem correta para campos numéricos/booleanos se fornecidos
           rating: data.rating !== undefined ? Number(data.rating) : undefined,
-          verified: data.verified !== undefined ? Boolean(data.verified) : undefined
+          verified: data.verified !== undefined ? Boolean(data.verified) : undefined,
+          latitude: data.latitude !== undefined && data.latitude !== null ? Number(data.latitude) : undefined,
+          longitude: data.longitude !== undefined && data.longitude !== null ? Number(data.longitude) : undefined,
+          reviews_count: data.reviews_count !== undefined && data.reviews_count !== null ? Number(data.reviews_count) : undefined,
+          students_count: data.students_count !== undefined && data.students_count !== null ? Number(data.students_count) : undefined,
+          founded_year: data.founded_year !== undefined && data.founded_year !== null ? Number(data.founded_year) : undefined,
+          courses: Array.isArray(data.courses) ? data.courses : undefined,
         }
       });
 

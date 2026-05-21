@@ -110,7 +110,7 @@ export class ForumController {
 
   static async createTopic(req: AuthenticatedRequest, res: Response) {
     try {
-      const { title, content } = req.body;
+      const { title, content, category, excerpt, tags } = req.body;
       const userId = req.user?.id;
 
       if (!userId) {
@@ -131,6 +131,9 @@ export class ForumController {
         data: {
           title,
           content,
+          category: category || "Geral",
+          excerpt: excerpt || content.substring(0, 150) + (content.length > 150 ? "..." : ""),
+          tags: tags || [],
           userId
         },
         include: {
@@ -209,6 +212,14 @@ export class ForumController {
         }
       });
 
+      // Atualizar o lastActivity do tópico correspondente
+      await prisma.forumTopic.update({
+        where: { id: topicId as string },
+        data: {
+          lastActivity: new Date()
+        }
+      });
+
       return res.status(201).json({
         success: true,
         data: reply
@@ -219,6 +230,66 @@ export class ForumController {
       return res.status(500).json({
         success: false,
         message: 'Erro interno ao responder ao tópico'
+      });
+    }
+  }
+
+  static async updateTopic(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const { title, content, category, excerpt, tags, likes, views, isPinned, isAnswered } = req.body;
+
+      const updated = await prisma.forumTopic.update({
+        where: { id: id as string },
+        data: {
+          title,
+          content,
+          category,
+          excerpt,
+          tags,
+          likes: likes !== undefined ? Number(likes) : undefined,
+          views: views !== undefined ? Number(views) : undefined,
+          isPinned,
+          isAnswered,
+          lastActivity: new Date()
+        }
+      });
+
+      return res.json({
+        success: true,
+        data: updated
+      });
+    } catch (error) {
+      console.error('Erro ao atualizar tópico:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Erro interno ao atualizar tópico'
+      });
+    }
+  }
+
+  static async updateReply(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const { content, likes } = req.body;
+
+      const updated = await prisma.forumReply.update({
+        where: { id: id as string },
+        data: {
+          content,
+          likes: likes !== undefined ? Number(likes) : undefined
+        }
+      });
+
+      return res.json({
+        success: true,
+        data: updated
+      });
+    } catch (error) {
+      console.error('Erro ao atualizar resposta:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Erro interno ao atualizar resposta'
       });
     }
   }

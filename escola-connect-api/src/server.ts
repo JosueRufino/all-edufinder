@@ -7,6 +7,8 @@ import schoolRoutes from './routes/school.routes';
 import forumRoutes from './routes/forum.routes';
 import courseRoutes from './routes/course.routes';
 import aiRoutes from './routes/ai.routes';
+import uploadRoutes from './routes/upload.routes';
+import path from 'path';
 
 dotenv.config();
 
@@ -25,6 +27,10 @@ app.use('/schools', schoolRoutes);
 app.use('/forum', forumRoutes);
 app.use('/courses', courseRoutes);
 app.use('/ai', aiRoutes);
+app.use('/upload', uploadRoutes);
+
+// Servir arquivos estáticos da pasta uploads
+app.use('/uploads', express.static(path.join(process.cwd(), 'public', 'uploads')));
 
 // Rota raiz inicial
 app.get('/', (req, res) => {
@@ -49,3 +55,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`[Escola Connect API] Servidor a funcionar na porta ${PORT} 🚀`);
 });
+// Trigger reload after freeing port 3001
